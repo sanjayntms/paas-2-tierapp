@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_inquiry'])) {
         // SAS Token and Azure Storage Account credentials
         $sasToken = "?sp=racwdl&st=2024-08-15T08:02:29Z&se=2024-08-16T16:02:29Z&spr=https&sv=2022-11-02&sr=c&sig=u0FWwZeTmdNXZ5eQ%2B4bLIA85YOdbbQIvlphup8EY03E%3D"; // Replace with your actual SAS token
         $containerName = "inquiry-images"; // Replace with your container name
-        $connectionString = "DefaultEndpointsProtocol=https;AccountName=your_account_name;AccountKey=your_account_key";
+  //      $connectionString = "DefaultEndpointsProtocol=https;AccountName=your_account_name;AccountKey=your_account_key";
         $blobClient = BlobRestProxy::createBlobService($sasToken);
 
         $fileTmpPath = $_FILES['photo']['tmp_name'];
