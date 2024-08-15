@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $containerName = "inquiry-photos"; // Ensure this container exists
 
     // SAS URL from environment variables
-    $fullSasUrl = getenv('AZURE_STORAGE_SAS_URL');
+    $fullSasUrl = getenv('AAZURE_STORAGE_CONNECTION_STRING');
 
     // Create the full URL for the blob including the SAS token
     $blobUrl = "{$fullSasUrl}/{$blobName}";
