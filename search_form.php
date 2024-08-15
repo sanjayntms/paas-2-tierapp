@@ -66,6 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-top: 20px;
             color: #888;
         }
+        .photo-link img {
+            max-width: 150px; /* Adjust as needed */
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -90,7 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <td><?php echo htmlspecialchars($result['mobile_number']); ?></td>
                             <td><?php echo htmlspecialchars($result['email']); ?></td>
                             <td><?php echo htmlspecialchars($result['message']); ?></td>
-                            <td><a href="<?php echo htmlspecialchars($result['photo_url']); ?>" target="_blank">View Photo</a></td>
+                            <td class="photo-link">
+                                <a href="<?php echo htmlspecialchars($result['photo_url']); ?>" target="_blank">
+                                    <img src="<?php echo htmlspecialchars($result['photo_url']); ?>" alt="Photo">
+                                </a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
