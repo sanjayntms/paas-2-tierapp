@@ -12,14 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Upload file to Azure Blob Storage
     $content = fopen($_FILES['photo']['tmp_name'], "r");
     $blobName = basename($_FILES["photo"]["name"]);
-    $containerName = "inquiry-photos";
+    $containerName = "inquiry-photos"; // Ensure this container exists
 
     try {
-        // Upload to Azure Blob
+        // Upload to Azure Blob using SAS
         $blobClient->createBlockBlob($containerName, $blobName, $content);
         
-        // Get the Blob URL
-        $blobUrl = "https://<your_storage_account>.blob.core.windows.net/$containerName/$blobName";
+        // Get the Blob URL using SAS
+        $blobUrl = "{$blobSasUrl}{$containerName}/$blobName";
 
         // Insert the form data along with Blob URL into the database
         $sql = "INSERT INTO Inquiries (name, mobile_number, email, message, photo_url) VALUES (?, ?, ?, ?, ?)";
