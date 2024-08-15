@@ -1,11 +1,12 @@
 # paas-2tierapp
-Need to run on App Service - PHP
+A) Need to run on App Service - PHP
 cd D:\home\site\wwwroot
 curl -sS https://getcomposer.org/installer | php
 php composer.phar require microsoft/azure-storage-blob
 
+B) Check db.php and set all related env variables in App Service
 
-Need to run on Azure SQL DB
+C) Need to run on Azure SQL DB
 CREATE TABLE Inquiries (
     id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(100),
