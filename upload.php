@@ -16,8 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     try {
         // Upload to Azure Blob
-         $contentType = mime_content_type($_FILES['photo']['tmp_name']);
-        $blobClient->createBlockBlob($containerName, $blobName, $content, ['ContentType' => $contentType]);
+         $blobClient->createBlockBlob($containerName, $blobName, $content);
         
         // Get the Blob URL
         $blobUrl = "https://ntmsphpsa.blob.core.windows.net/$containerName/$blobName";
