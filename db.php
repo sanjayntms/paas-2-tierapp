@@ -10,16 +10,12 @@ $dbName = getenv('DB_NAME');
 $dbUsername = getenv('DB_USERNAME');
 $dbPassword = getenv('DB_PASSWORD');
 
-// Full SAS URL (includes both endpoint and token)
-$fullSasUrl = getenv('AZURE_STORAGE_SAS_URL');
+// Connection string for Azure Blob Storage
+$connectionString = getenv('AZURE_STORAGE_CONNECTION_STRING');
 
-// Split the SAS URL into Blob endpoint and SAS token
-$blobEndpoint = strtok($fullSasUrl, '?'); // Everything before the '?' is the endpoint
-$sasToken = '?' . parse_url($fullSasUrl, PHP_URL_QUERY); // Everything after the '?' is the SAS token
-
-// Create the Blob client using only the Blob endpoint
 try {
-    $blobClient = BlobRestProxy::createBlobService($blobEndpoint);
+    // Create the Blob client using the connection string
+    $blobClient = BlobRestProxy::createBlobService($connectionString);
 
     // Create PDO instance for database connection
     $pdo = new PDO("sqlsrv:server = tcp:$dbServer,1433; Database = $dbName", $dbUsername, $dbPassword);
