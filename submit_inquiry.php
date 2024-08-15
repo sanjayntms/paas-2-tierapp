@@ -1,16 +1,17 @@
 <?php
 include 'db.php'; // Include database connection
 require_once 'vendor/autoload.php'; // Include Azure Blob Storage SDK
+$sasToken = "?sp=racwdl&st=2024-08-15T08:02:29Z&se=2024-08-16T16:02:29Z&spr=https&sv=2022-11-02&sr=c&sig=u0FWwZeTmdNXZ5eQ%2B4bLIA85YOdbbQIvlphup8EY03E%3D";
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\CreateBlockBlobOptions;
 
 // Azure Storage Account credentials
-$connectionString = "DefaultEndpointsProtocol=https;AccountName=your_account_name;AccountKey=your_account_key";
-$blobClient = BlobRestProxy::createBlobService($connectionString);
+// $connectionString = "DefaultEndpointsProtocol=https;AccountName=your_account_name;AccountKey=your_account_key";
+$blobClient = BlobRestProxy::createBlobService($sasToken);
 
 // SAS Token for the container
-$sasToken = getenv('AZURE_STORAGE_SAS_TOKEN');
+// $sasToken = getenv('AZURE_STORAGE_SAS_TOKEN');
 $containerName = "inquiry-images"; // Replace with your container name
 
 // Check if the form is submitted
