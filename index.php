@@ -49,7 +49,7 @@
     <div class="container">
         <!-- Search Form -->
         <h2>Search Inquiries</h2>
-        <form action="search_results.php" method="post">
+        <form action="search_form.php" method="post">
             <input type="text" name="search_query" placeholder="Enter search term">
             <input type="submit" value="Search">
         </form>
