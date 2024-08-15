@@ -16,3 +16,4 @@ CREATE TABLE Inquiries (
     photo_url NVARCHAR(255),
     created_at DATETIME DEFAULT GETDATE()
 );
+D) Create storage a/c for eg ntmsphpsa. If any other name usesd for SA, update upload.php
