@@ -1,34 +1,42 @@
 <?php
-require 'vendor/autoload.php';
+// Include the database connection and Azure Blob setup
+include 'db.php';
 
-use MicrosoftAzure\Storage\Blob\BlobRestProxy;
-use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $name = $_POST['name'];
+    $mobile = $_POST['mobile'];
+    $email = $_POST['email'];
+    $message = $_POST['message'];
+    $photo = $_FILES['photo']['name'];
+    
+    // Check if file was uploaded
+    if (empty($photo)) {
+        echo "No file uploaded. Please select a file.";
+        exit;
+    }
 
-// Fetch database config from environment variables
-$dbServer = getenv('DB_SERVER');
-$dbName = getenv('DB_NAME');
-$dbUsername = getenv('DB_USERNAME');
-$dbPassword = getenv('DB_PASSWORD');
+    // Upload file to Azure Blob Storage
+    $content = fopen($_FILES['photo']['tmp_name'], "r");
+    $blobName = basename($_FILES["photo"]["name"]);
+    $containerName = "inquiry-photos"; // Ensure this container exists
 
-// SAS URL for Azure Blob Storage
-$fullSasUrl = getenv('AZURE_STORAGE_SAS_URL'); // Full SAS URL
+    try {
+        // Upload to Azure Blob using SAS
+        $blobClient->createBlockBlob($containerName, $blobName, $content, $sasToken);
 
-// Parse the Blob endpoint and SAS token
-$blobEndpoint = strtok($fullSasUrl, '?'); // Blob endpoint (URL before the ?)
-$sasToken = '?' . parse_url($fullSasUrl, PHP_URL_QUERY); // SAS token (everything after the ?)
+        // Construct the Blob URL manually using the blob endpoint and SAS token
+        $blobUrl = "{$blobEndpoint}/{$containerName}/{$blobName}{$sasToken}";
 
-// Create the Azure Blob client using the endpoint and SAS token
-try {
-    $blobClient = BlobRestProxy::createBlobService($blobEndpoint . $sasToken);
+        // Insert the form data along with the Blob URL into the database
+        $sql = "INSERT INTO Inquiries (name, mobile_number, email, message, photo_url) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$name, $mobile, $email, $message, $blobUrl]);
 
-    // Create PDO instance using environment variables
-    $pdo = new PDO("sqlsrv:server = tcp:$dbServer,1433; Database = $dbName", $dbUsername, $dbPassword);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo "Error connecting to the database: " . $e->getMessage();
-    exit;
-} catch (ServiceException $e) {
-    echo "Error connecting to Azure Blob Storage: " . $e->getMessage();
-    exit;
+        echo "Inquiry submitted successfully.";
+    } catch (ServiceException $e) {
+        echo "Error uploading file to Azure: " . $e->getMessage();
+    } catch (PDOException $e) {
+        echo "Error inserting data: " . $e->getMessage();
+    }
 }
 ?>
