@@ -5,81 +5,63 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
         }
-
-        .form-container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            max-width: 400px;
-            width: 100%;
-            margin: auto;
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
         }
-
         h2 {
             text-align: center;
-            color: #333333;
-            margin-bottom: 24px;
+            color: #333;
         }
-
-        label {
-            font-weight: bold;
-            color: #555555;
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
-        input[type="text"], input[type="email"], textarea, input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0 16px 0;
-            border-radius: 4px;
-            border: 1px solid #cccccc;
-            box-sizing: border-box;
-        }
-
-        input[type="submit"] {
-            width: 100%;
-            background-color: #007bff;
-            color: white;
-            padding: 14px 20px;
-            margin: 16px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+        input[type="text"], input[type="submit"], input[type="file"], textarea {
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
             font-size: 16px;
         }
-
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
         input[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
+        }
+        textarea {
+            resize: vertical;
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Submit Your Inquiry</h2>
+    <div class="container">
+        <!-- Search Form -->
+        <h2>Search Inquiries</h2>
+        <form action="search_results.php" method="post">
+            <input type="text" name="search_query" placeholder="Enter search term">
+            <input type="submit" value="Search">
+        </form>
+
+        <!-- Inquiry Form -->
+        <h2>Submit an Inquiry</h2>
         <form action="upload.php" method="post" enctype="multipart/form-data">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-            
-            <label for="mobile">Mobile Number:</label>
-            <input type="text" id="mobile" name="mobile" required>
-            
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" required></textarea>
-            
-            <label for="photo">Photo:</label>
-            <input type="file" id="photo" name="photo" accept="image/*" required>
-            
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="text" name="mobile" placeholder="Mobile Number" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+            <input type="file" name="photo" required>
             <input type="submit" value="Submit Inquiry">
         </form>
     </div>
