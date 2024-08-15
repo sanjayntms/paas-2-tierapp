@@ -1,7 +1,7 @@
 <?php
 include 'db.php'; // Include your database connection
-$sasToken = getenv('AZURE_STORAGE_SAS_TOKEN');
  use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+$sasToken = "?sp=racwdl&st=2024-08-15T08:02:29Z&se=2024-08-16T16:02:29Z&spr=https&sv=2022-11-02&sr=c&sig=u0FWwZeTmdNXZ5eQ%2B4bLIA85YOdbbQIvlphup8EY03E%3D";
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_inquiry'])) {
     // Inquiry form data
@@ -17,10 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_inquiry'])) {
        
 
         // SAS Token and Azure Storage Account credentials
-     $sasToken = getenv('AZURE_STORAGE_SAS_TOKEN');   
-     $containerName = "inquiry-images"; // Replace with your container name
-       // $connectionString = "DefaultEndpointsProtocol=https;AccountName=your_account_name;AccountKey=your_account_key";
-        $blobClient = BlobRestProxy::createBlobService($sasToken);
+        $sasToken = "?sp=racwdl&st=2024-08-15T08:02:29Z&se=2024-08-16T16:02:29Z&spr=https&sv=2022-11-02&sr=c&sig=u0FWwZeTmdNXZ5eQ%2B4bLIA85YOdbbQIvlphup8EY03E%3D"; // Replace with your actual SAS token
+        $containerName = "inquiry-images"; // Replace with your container name
+        $connectionString = "DefaultEndpointsProtocol=https;AccountName=your_account_name;AccountKey=your_account_key";
+        $blobClient = BlobRestProxy::createBlobService($connectionString);
 
         $fileTmpPath = $_FILES['photo']['tmp_name'];
         $fileName = $_FILES['photo']['name'];
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_inquiry'])) {
         $blobName = $fileName;
         try {
             $blobClient->createBlockBlob($containerName, $blobName, $content);
-            $photoUrl = "https://ntmsphpsa.blob.core.windows.net/$containerName/$blobName$sasToken";
+            $photoUrl = "https://your_account_name.blob.core.windows.net/$containerName/$blobName$sasToken";
         } catch (Exception $e) {
             echo "Error uploading file: " . $e->getMessage();
         }
@@ -158,23 +158,29 @@ $inquiries = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </form>
     </div>
 
-<h1>Submitted Inquiries</h1>
+    <!-- Display Inquiries -->
+    <h1>Submitted Inquiries</h1>
+    <?php if (empty($inquiries)): ?>
+        <p>No inquiries found.</p>
+    <?php else: ?>
+        <?php foreach ($inquiries as $inquiry): ?>
+            <div class="inquiry-container">
+                <h2>Inquiry Details</h2>
+                <div class="inquiry-details">
+                    <p><strong>Name:</strong> <?php echo htmlspecialchars($inquiry['name']); ?></p>
+                    <p><strong>Email:</strong> <?php echo htmlspecialchars($inquiry['email']); ?></p>
+                    <p><strong>Message:</strong> <?php echo htmlspecialchars($inquiry['message']); ?></p>
+                    
+                    <?php if (!empty($inquiry['photo'])): ?>
+                        <p><strong>Photo:</strong></p>
+                        <img src="<?php echo htmlspecialchars($inquiry['photo']); ?>" alt="Uploaded Photo" class="inquiry-photo">
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    
+</div>
 
-<?php if (empty($inquiries)): ?>
-    <p>No inquiries found.</p>
-<?php else: ?>
-    <?php foreach ($inquiries as $inquiry): ?>
-        <div class="inquiry-container">
-            <p><strong>Name:</strong> <?php echo htmlspecialchars($inquiry['name']); ?></p>
-            <p><strong>Email:</strong> <?php echo htmlspecialchars($inquiry['email']); ?></p>
-            <p><strong>Message:</strong> <?php echo htmlspecialchars($inquiry['message']); ?></p>
-            
-            <?php if (!empty($inquiry['photo'])): ?>
-                <p><strong>Photo:</strong></p>
-                <img src="<?php echo htmlspecialchars($inquiry['photo']) . $sasToken; ?>" alt="Uploaded Photo" class="inquiry-photo">
-            <?php endif; ?>
-        </div>
-    <?php endforeach; ?>
-<?php endif; ?>
 </body>
 </html>
