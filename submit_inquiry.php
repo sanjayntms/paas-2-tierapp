@@ -11,8 +11,8 @@ $sasToken = "?sp=racwdl&st=2024-08-15T08:02:29Z&se=2024-08-16T16:02:29Z&spr=http
 $containerName = "inquiry-images"; // Replace with your container name
 
 // Azure Storage Account credentials (not needed for SAS but may be used for other operations)
-$connectionString = "DefaultEndpointsProtocol=https;AccountName=your_account_name;AccountKey=your_account_key";
-$blobClient = BlobRestProxy::createBlobService($connectionString);
+//$connectionString = "DefaultEndpointsProtocol=https;AccountName=your_account_name;AccountKey=your_account_key";
+$blobClient = BlobRestProxy::createBlobService($sasToken);
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $blobClient->createBlockBlob($containerName, $blobName, $content);
 
         // Construct the URL with SAS token
-        $photoUrl = "https://your_account_name.blob.core.windows.net/$containerName/$blobName$sasToken";
+        $photoUrl = "https://ntmsphpsa.blob.core.windows.net/$containerName/$blobName$sasToken";
     }
 
     // Insert the inquiry into the database
