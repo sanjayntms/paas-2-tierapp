@@ -1,1 +1,1 @@
-# paas-3tierapp
+# paas-2tierapp
