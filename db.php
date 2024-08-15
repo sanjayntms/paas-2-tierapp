@@ -1,8 +1,8 @@
 <?php
-$serverName = "ntmssql.database.windows.net";
-$database = "ntmsphpdb";
-$username = "vmadmin";
-$password = "123#ntms123#";
+$serverName = getenv('DB_SERVER');
+$database = getenv('DB_DATABASE');
+$username = getenv('DB_USERNAME');
+$password = getenv('DB_PASSWORD');
 
 try {
     // Create connection
