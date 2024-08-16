@@ -9,7 +9,7 @@ $dbServer = getenv('DB_SERVER');
 $dbName = getenv('DB_NAME');
 $dbUsername = getenv('DB_USERNAME');
 $dbPassword = getenv('DB_PASSWORD');
-
+$storagename = getenv('Storage_NAME');
 // Connection string for Azure Blob Storage
 $connectionString = getenv('AZURE_STORAGE_CONNECTION_STRING');
 
