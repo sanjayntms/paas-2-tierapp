@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          $blobClient->createBlockBlob($containerName, $blobName, $content);
         
         // Get the Blob URL
-        $blobUrl = "https://$Storage_NAME.blob.core.windows.net/$containerName/$blobName";
+        $blobUrl = "https://$storagename.blob.core.windows.net/$containerName/$blobName";
 
         // Insert the form data along with Blob URL into the database
         $sql = "INSERT INTO Inquiries (name, mobile_number, email, message, photo_url) VALUES (?, ?, ?, ?, ?)";
