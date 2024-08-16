@@ -16,4 +16,12 @@ CREATE TABLE Inquiries (
     photo_url NVARCHAR(255),
     created_at DATETIME DEFAULT GETDATE()
 );
-D) Create storage a/c for eg ntmsphpsa. If any other name usesd for SA, update upload.php
+D)CREATE TABLE Users (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    username NVARCHAR(255) NOT NULL,
+    password_hash NVARCHAR(255) NOT NULL
+);
+INSERT INTO Users (username, password_hash) 
+VALUES ('admin', 'admin123');
+
+E) Create storage a/c for eg ntmsphpsa. If any other name usesd for SA, update upload.php
