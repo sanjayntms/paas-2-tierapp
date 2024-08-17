@@ -1,7 +1,7 @@
 <?php
 // Include the database connection and Azure Blob setup
 include 'db.php';
-
+$storagename = getenv('Storage_NAME');
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $mobile = $_POST['mobile'];
