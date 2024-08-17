@@ -10,7 +10,7 @@ php composer.phar require microsoft/azure-storage-blob
 
 
 # C) Need to run on Azure SQL DB - Create Table for inquiries
-CREATE TABLE Inquiries (
+## CREATE TABLE Inquiries (
     id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(100),
     mobile_number NVARCHAR(20),
@@ -18,10 +18,10 @@ CREATE TABLE Inquiries (
     message NVARCHAR(MAX),
     photo_url NVARCHAR(255),
     created_at DATETIME DEFAULT GETDATE()
-);
+                          );
 
 # D) Create Azure SQL table usesr for login
-    CREATE TABLE Users (
+   ## CREATE TABLE Users (
     id INT IDENTITY(1,1) PRIMARY KEY,
     username NVARCHAR(255) NOT NULL,
     password_hash NVARCHAR(255) NOT NULL
