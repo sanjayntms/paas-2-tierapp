@@ -25,9 +25,9 @@ php composer.phar require microsoft/azure-storage-blob
     id INT IDENTITY(1,1) PRIMARY KEY,
     username NVARCHAR(255) NOT NULL,
     password_hash NVARCHAR(255) NOT NULL
-);
-INSERT INTO Users (username, password_hash) 
-VALUES ('admin', 'admin123');
+                         );
+    INSERT INTO Users (username, password_hash) 
+    VALUES ('admin', 'admin123');
 
 # E) Create storage account and add container inquiry-photos
 
