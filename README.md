@@ -23,5 +23,6 @@ D)CREATE TABLE Users (
 );
 INSERT INTO Users (username, password_hash) 
 VALUES ('admin', 'admin123');
+E) Create storage account and add container inquiry-photos
 
 E) Create storage a/c for eg ntmsphpsa. If any other name usesd for SA, update upload.php
