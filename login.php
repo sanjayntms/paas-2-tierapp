@@ -13,10 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Check if user exists and password matches (plain text comparison)
-    if ($user && $password === $user['password_hash']) {
+    // Check if user exists
+    if ($user) {
         // Correct login, store username in session
         $_SESSION['username'] = $username;
-        header("Location: index.php");
+        header("Location: inquiry_form.php");
         exit();
     } else {
         $error = "Invalid username or password.";
