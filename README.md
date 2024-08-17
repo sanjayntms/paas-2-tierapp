@@ -30,4 +30,4 @@ php composer.phar require microsoft/azure-storage-blob
     VALUES ('admin', 'admin123');
 
 # E) Create storage account and add container inquiry-photos
-
+# F) For SQL injection, use ' OR '1'='1'
