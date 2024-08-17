@@ -1,5 +1,5 @@
 # paas-2tierapp
-A) Need to run on App Service - PHP
+A) Need to run on App Service - PHP, SSH APP service from app service blade
 cd D:\home\site\wwwroot
 curl -sS https://getcomposer.org/installer | php
 php composer.phar require microsoft/azure-storage-blob
