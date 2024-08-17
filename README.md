@@ -8,7 +8,7 @@ php composer.phar require microsoft/azure-storage-blob
 # B) Check db.php and set all related env variables in App Service
 
 
-# C) Need to run on Azure SQL DB
+# C) Need to run on Azure SQL DB - Create Table for inquiries
 CREATE TABLE Inquiries (
     id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(100),
@@ -19,7 +19,8 @@ CREATE TABLE Inquiries (
     created_at DATETIME DEFAULT GETDATE()
 );
 
-# D)CREATE TABLE Users (
+# D) Create Azure SQL table usesr for login
+    CREATE TABLE Users (
     id INT IDENTITY(1,1) PRIMARY KEY,
     username NVARCHAR(255) NOT NULL,
     password_hash NVARCHAR(255) NOT NULL
