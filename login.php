@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($user) {
         // Correct login, store username in session
         $_SESSION['username'] = $username;
-        header("Location: inquiry_form.php");
+        header("Location: index.php");
         exit();
     } else {
         $error = "Invalid username or password.";
