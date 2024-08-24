@@ -22,7 +22,7 @@ This project demonstrates a 2-tier application using PHP with Azure App Service,
                           );
 
 # D) Create Azure SQL table usesr for login
-   ## CREATE TABLE Users (
+    CREATE TABLE Users (
     id INT IDENTITY(1,1) PRIMARY KEY,
     username NVARCHAR(255) NOT NULL,
     password_hash NVARCHAR(255) NOT NULL
