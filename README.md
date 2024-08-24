@@ -10,7 +10,8 @@ This project demonstrates a 2-tier application using PHP with Azure App Service,
 
 
 # C) Need to run on Azure SQL DB - Create Table for inquiries
-## CREATE TABLE Inquiries (
+## 
+    CREATE TABLE Inquiries (
     id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(100),
     mobile_number NVARCHAR(20),
