@@ -31,4 +31,4 @@ This project demonstrates a 2-tier application using PHP with Azure App Service,
     VALUES ('admin', 'admin123');
 
 # E) Create storage account and add container inquiry-photos
-# F) For SQL injection, use ' OR '1'='1'
+# F) For SQL injection, use value in double quote  " OR '1'='1' " 
