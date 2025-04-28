@@ -1,9 +1,7 @@
 name: Azure PHP App Deploy with SQL DB and Storage
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   AZURE_RESOURCE_GROUP: 2-tier-app-NTMS-RG
