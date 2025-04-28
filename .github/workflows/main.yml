@@ -182,28 +182,35 @@ jobs:
       run: |
          ls -l /opt/
          ls -l /opt/mssql-tools/bin/
-         /opt/mssql-tools/bin/sqlcmd -S tcp:${AZURE_SQL_SERVER_NAME}.database.windows.net,1433 -U ${AZURE_DB_ADMIN_USER} -P ${AZURE_DB_ADMIN_PASSWORD} -d master -Q "SELECT name FROM sys.databases" \
-          -U $AZURE_DB_ADMIN_USER \
-          -P $AZURE_DB_ADMIN_PASSWORD \
-          -d $AZURE_SQL_DB_NAME \
-          -N -Q "
-            CREATE TABLE IF NOT EXISTS Inquiries (
-              id INT PRIMARY KEY IDENTITY(1,1),
-              name NVARCHAR(100),
-              mobile_number NVARCHAR(20),
-              email NVARCHAR(100),
-              message NVARCHAR(MAX),
-              photo_url NVARCHAR(255),
-              created_at DATETIME DEFAULT GETDATE()
-            );
+         /opt/mssql-tools/bin/sqlcmd -S tcp:${AZURE_SQL_SERVER_NAME}.database.windows.net,1433 \
+         -U ${AZURE_DB_ADMIN_USER} \
+         -P ${AZURE_DB_ADMIN_PASSWORD} \
+         -d ${AZURE_SQL_DB_NAME} \
+         -N -Q "
+          IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Inquiries')
+          BEGIN
+           CREATE TABLE [Inquiries] (
+           [id] INT PRIMARY KEY IDENTITY(1,1),
+           [name] NVARCHAR(100),
+           [mobile_number] NVARCHAR(20),
+           [email] NVARCHAR(100),
+           [message] NVARCHAR(MAX),
+           [photo_url] NVARCHAR(255),
+           [created_at] DATETIME DEFAULT GETDATE()
+         );
+         END
 
-            CREATE TABLE IF NOT EXISTS Users (
-              id INT IDENTITY(1,1) PRIMARY KEY,
-              username NVARCHAR(255) NOT NULL,
-              password_hash NVARCHAR(255) NOT NULL
-            );
+         IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Users')
+         BEGIN
+          CREATE TABLE [Users] (
+           [id] INT IDENTITY(1,1) PRIMARY KEY,
+           [username] NVARCHAR(255) NOT NULL,
+           [password_hash] NVARCHAR(255) NOT NULL
+          );
+         END
 
-            IF NOT EXISTS (SELECT 1 FROM Users WHERE username='admin')
-              INSERT INTO Users (username, password_hash) VALUES ('admin', 'admin123');
-          "
-
+         IF NOT EXISTS (SELECT 1 FROM [Users] WHERE username='admin')
+         BEGIN
+          INSERT INTO [Users] (username, password_hash) VALUES ('admin', 'admin123');
+          END
+         "
