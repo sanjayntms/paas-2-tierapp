@@ -26,6 +26,10 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: Create Resource Group
+      run: |
+          az group create --name $RESOURCE_GROUP --location $AZURE_LOCATION
+    
     - name: Create Storage Account and Container
       run: |
         az storage account create \
