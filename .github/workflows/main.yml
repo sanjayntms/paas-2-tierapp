@@ -1,0 +1,173 @@
+name: Azure PHP App Deploy with SQL DB and Storage
+
+on:
+  workflow_dispatch:
+
+env:
+  AZURE_RESOURCE_GROUP: 2-tier-app-NTMS-RG
+  AZURE_LOCATION: canadacentral
+  AZURE_APP_SERVICE_PLAN: ntmsasp1
+  AZURE_APP_NAME: ntmsAppService1
+  AZURE_SQL_SERVER_NAME: ntmssqlserver1  # must be globally unique
+  AZURE_SQL_DB_NAME: db1
+  AZURE_STORAGE_ACCOUNT_NAME: ntms2tappsa1  # must be globally unique
+  AZURE_CONTAINER_NAME: inquiry-photos
+  AZURE_DB_ADMIN_USER: sqladmin1
+  AZURE_DB_ADMIN_PASSWORD: ${{ secrets.AZURE_DB_ADMIN_PASSWORD }}
+
+jobs:
+
+  create-storage:
+    name: Create Storage Account
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Create Storage Account and Container
+      run: |
+        az storage account create \
+          --name $AZURE_STORAGE_ACCOUNT_NAME \
+          --resource-group $AZURE_RESOURCE_GROUP \
+          --location $AZURE_LOCATION \
+          --sku Standard_LRS
+
+        CONNECTION_STRING=$(az storage account show-connection-string \
+          --name $AZURE_STORAGE_ACCOUNT_NAME \
+          --resource-group $AZURE_RESOURCE_GROUP \
+          --query connectionString -o tsv)
+
+        echo "STORAGE_CONNECTION_STRING=$CONNECTION_STRING" >> $GITHUB_ENV
+
+        az storage container create \
+          --name $AZURE_CONTAINER_NAME \
+          --account-name $AZURE_STORAGE_ACCOUNT_NAME
+
+  create-sql:
+    name: Create SQL Server and Database
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Create Azure SQL Server and Database
+      run: |
+        az sql server create \
+          --name $AZURE_SQL_SERVER_NAME \
+          --resource-group $AZURE_RESOURCE_GROUP \
+          --location $AZURE_LOCATION \
+          --admin-user $AZURE_DB_ADMIN_USER \
+          --admin-password $AZURE_DB_ADMIN_PASSWORD
+
+        az sql db create \
+          --resource-group $AZURE_RESOURCE_GROUP \
+          --server $AZURE_SQL_SERVER_NAME \
+          --name $AZURE_SQL_DB_NAME \
+          --service-objective S1
+
+        az sql server firewall-rule create \
+          --resource-group $AZURE_RESOURCE_GROUP \
+          --server $AZURE_SQL_SERVER_NAME \
+          --name AllowAllAzureIPs \
+          --start-ip-address 0.0.0.0 \
+          --end-ip-address 0.0.0.0
+
+  create-appservice:
+    name: Create App Service
+    runs-on: ubuntu-latest
+    needs: [create-storage, create-sql]
+    steps:
+    - name: Login to Azure
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Create App Service Plan
+      run: |
+        az appservice plan create \
+          --name $AZURE_APP_SERVICE_PLAN \
+          --resource-group $AZURE_RESOURCE_GROUP \
+          --sku B1 \
+          --is-linux
+
+    - name: Create PHP Web App
+      run: |
+        az webapp create \
+          --resource-group $AZURE_RESOURCE_GROUP \
+          --plan $AZURE_APP_SERVICE_PLAN \
+          --name $AZURE_APP_NAME \
+          --runtime "PHP|8.2"
+
+    - name: Set App Settings (Environment Variables)
+      run: |
+        az webapp config appsettings set \
+          --resource-group $AZURE_RESOURCE_GROUP \
+          --name $AZURE_APP_NAME \
+          --settings \
+            DB_SERVER="$AZURE_SQL_SERVER_NAME.database.windows.net" \
+            DB_NAME="$AZURE_SQL_DB_NAME" \
+            DB_USERNAME="$AZURE_DB_ADMIN_USER" \
+            DB_PASSWORD="$AZURE_DB_ADMIN_PASSWORD" \
+            Storage_NAME="$AZURE_STORAGE_ACCOUNT_NAME" \
+            AZURE_STORAGE_CONNECTION_STRING="$(az storage account show-connection-string --name $AZURE_STORAGE_ACCOUNT_NAME --resource-group $AZURE_RESOURCE_GROUP --query connectionString -o tsv)"
+
+  deploy-code:
+    name: Deploy Code to App Service
+    runs-on: ubuntu-latest
+    needs: create-appservice
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Composer and Required PHP Packages
+      run: |
+        curl -sS https://getcomposer.org/installer | php
+        php composer.phar require microsoft/azure-storage-blob
+
+    - name: Deploy Code
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: ${{ env.AZURE_APP_NAME }}
+        package: .
+
+  initialize-db:
+    name: Initialize SQL Database
+    runs-on: ubuntu-latest
+    needs: create-sql
+    steps:
+    - name: Install SQLCMD tools
+      run: |
+        curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+        sudo apt-add-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list)"
+        sudo apt-get update
+        sudo apt-get install -y mssql-tools unixodbc-dev
+
+    - name: Initialize Database Schema
+      run: |
+        sqlcmd -S tcp:${AZURE_SQL_SERVER_NAME}.database.windows.net,1433 \
+          -U $AZURE_DB_ADMIN_USER \
+          -P $AZURE_DB_ADMIN_PASSWORD \
+          -d $AZURE_SQL_DB_NAME \
+          -N -Q "
+            CREATE TABLE Inquiries (
+              id INT PRIMARY KEY IDENTITY(1,1),
+              name NVARCHAR(100),
+              mobile_number NVARCHAR(20),
+              email NVARCHAR(100),
+              message NVARCHAR(MAX),
+              photo_url NVARCHAR(255),
+              created_at DATETIME DEFAULT GETDATE()
+            );
+
+            CREATE TABLE Users (
+              id INT IDENTITY(1,1) PRIMARY KEY,
+              username NVARCHAR(255) NOT NULL,
+              password_hash NVARCHAR(255) NOT NULL
+            );
+
+            INSERT INTO Users (username, password_hash) VALUES ('admin', 'admin123');
+          "
