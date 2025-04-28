@@ -177,10 +177,12 @@ jobs:
       shell: bash
 
 
-
+    
     - name: Initialize SQL Database (Create Tables and Insert Data)
       run: |
-        /opt/mssql-tools18/bin/sqlcmd -S tcp:${AZURE_SQL_SERVER_NAME}.database.windows.net,1433 \
+         ls -l /opt/
+         ls -l /opt/mssql-tools/bin/
+         /opt/mssql-tools/bin/sqlcmd -S tcp:${AZURE_SQL_SERVER_NAME}.database.windows.net,1433 -U ${AZURE_DB_ADMIN_USER} -P ${AZURE_DB_ADMIN_PASSWORD} -d master -Q "SELECT name FROM sys.databases" \
           -U $AZURE_DB_ADMIN_USER \
           -P $AZURE_DB_ADMIN_PASSWORD \
           -d $AZURE_SQL_DB_NAME \
