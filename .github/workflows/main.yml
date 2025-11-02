@@ -7,7 +7,7 @@ env:
   AZURE_RESOURCE_GROUP: 2-tier-app-NTMS-RG
   AZURE_LOCATION: canadacentral
   AZURE_APP_SERVICE_PLAN: ntmsasp1
-  AZURE_APP_NAME: myPhpAppService
+  AZURE_APP_NAME: ntmsPhpApp1
   AZURE_SQL_SERVER_NAME: ntmssqlserver1  # must be globally unique
   AZURE_SQL_DB_NAME: db1
   AZURE_STORAGE_ACCOUNT_NAME: ntms2tappsa1  # must be globally unique
