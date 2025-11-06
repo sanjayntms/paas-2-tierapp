@@ -16,11 +16,31 @@ if (!isset($_SESSION['username'])) {
             margin: 0;
             padding: 0;
         }
+        .top-bar {
+            width: 100%;
+            background-color: #222;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logout-btn {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 8px 14px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .logout-btn:hover {
+            background-color: #e60000;
+        }
         .container {
             width: 50%;
-            margin: 50px auto;
+            margin: 30px auto;
             background-color: #fff;
-            padding: 20px;
+            padding: 25px;
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
         }
         h2 {
@@ -32,7 +52,7 @@ if (!isset($_SESSION['username'])) {
             flex-direction: column;
             align-items: center;
         }
-        input[type="text"], input[type="submit"], input[type="file"], textarea {
+        input[type="text"], input[type="email"], input[type="submit"], input[type="file"], textarea {
             padding: 10px;
             margin: 10px;
             width: 80%;
@@ -53,6 +73,15 @@ if (!isset($_SESSION['username'])) {
     </style>
 </head>
 <body>
+
+    <!-- Top Bar with Username & Logout -->
+    <div class="top-bar">
+        <div>Welcome, <?php echo $_SESSION['username']; ?></div>
+        <form action="logout.php" method="post" style="margin:0;">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+
     <div class="container">
         <!-- Search Form -->
         <h2>Search Inquiries</h2>
@@ -72,12 +101,6 @@ if (!isset($_SESSION['username'])) {
             <input type="submit" value="Submit Inquiry">
         </form>
     </div>
+
 </body>
 </html>
-<?php
-session_start();
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
-    exit();
-}
-?>
