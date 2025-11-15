@@ -108,17 +108,17 @@ function include_vuln($name) {
     <div class="wrap">
         <aside class="sidebar" aria-label="Main navigation">
             <h4>Navigation</h4>
-            <a class="nav-link <?php echo $tab==='inquiry'?'active':'' ?>" href="index.php?v=inquiry">Inquiry Form</a>
-            <a class="nav-link <?php echo $tab==='search'?'active':'' ?>" href="index.php?v=search">Search</a>
+            <a class="nav-link <?php echo $tab==='inquiry'?'active':'' ?>" href="index1.php?v=inquiry">Inquiry Form</a>
+            <a class="nav-link <?php echo $tab==='search'?'active':'' ?>" href="index1.php?v=search">Search</a>
 
             <hr style="border:none;border-top:1px solid rgba(255,255,255,0.06);margin:12px 0">
 
             <h4 style="color:#dbeeff">OWASP Demos</h4>
-            <a class="nav-link <?php echo $tab==='sqli'?'active':'' ?>" href="index.php?v=sqli">A03: SQL Injection</a>
-            <a class="nav-link <?php echo $tab==='xss'?'active':'' ?>" href="index.php?v=xss">A03: Stored XSS</a>
-            <a class="nav-link <?php echo $tab==='dom'?'active':'' ?>" href="index.php?v=dom">DOM XSS</a>
-            <a class="nav-link <?php echo $tab==='auth'?'active':'' ?>" href="index.php?v=auth">A07: Broken Auth</a>
-            <a class="nav-link <?php echo $tab==='idor'?'active':'' ?>" href="index.php?v=idor">A01: IDOR</a>
+            <a class="nav-link <?php echo $tab==='sqli'?'active':'' ?>" href="index1.php?v=sqli">A03: SQL Injection</a>
+            <a class="nav-link <?php echo $tab==='xss'?'active':'' ?>" href="index1.php?v=xss">A03: Stored XSS</a>
+            <a class="nav-link <?php echo $tab==='dom'?'active':'' ?>" href="index1.php?v=dom">DOM XSS</a>
+            <a class="nav-link <?php echo $tab==='auth'?'active':'' ?>" href="index1.php?v=auth">A07: Broken Auth</a>
+            <a class="nav-link <?php echo $tab==='idor'?'active':'' ?>" href="index1.php?v=idor">A01: IDOR</a>
 
             <hr style="border:none;border-top:1px solid rgba(255,255,255,0.06);margin:12px 0">
             <div class="small">Demo only — run in test environment. Do not expose to production.</div>
